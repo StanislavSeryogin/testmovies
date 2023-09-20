@@ -36,4 +36,20 @@ class MovieListViewModel: ObservableObject {
         }
         isLoading = false
     }
+    
+    func sortMovies(by option: Int) {
+        switch option {
+        case 0: // Popularity
+            movies.sort(by: { $0.popularity ?? 0.0 > $1.popularity ?? 0.0 })
+        case 1: // Title
+            movies.sort(by: { $0.title < $1.title })
+        case 2: // Release Date
+            movies.sort(by: { $0.release_date ?? "" > $1.release_date ?? "" })
+        case 3: // Vote Average
+            movies.sort(by: { $0.vote_average > $1.vote_average })
+        default:
+            break // Do nothing for default
+        }
+    }
+
 }

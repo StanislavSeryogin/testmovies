@@ -6,17 +6,16 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MainMovieInfo: View {
     let movie: Movie
 
     var body: some View {
         VStack(alignment: .leading) {
-            AsyncImage(url: movie.posterURL) { image in
-                image.resizable().scaledToFit()
-            } placeholder: {
-                ProgressView()
-            }
+            KFImage(movie.posterURL)
+                .resizable()
+                .scaledToFit()
             Text(movie.title)
             Text(movie.genreText)
             Text("\(movie.vote_average)")
