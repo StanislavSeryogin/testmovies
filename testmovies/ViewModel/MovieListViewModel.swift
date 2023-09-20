@@ -13,6 +13,7 @@ class MovieListViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var currentPage: Int = 1
     @Published var canLoadMore: Bool = true
+    @Published var trendingState: TrendingState = .none
 
     private var movieService: MovieService
 
@@ -20,36 +21,46 @@ class MovieListViewModel: ObservableObject {
         self.movieService = movieService
     }
 
-    func fetchMoreMovies() async {
-        guard !isLoading && canLoadMore else { return }
+    func search(term: String) async {
+        // Prevent searching for empty strings
+        guard !term.trimmingCharacters(in: .whitespaces).isEmpty else {
+            trendingState = .none
+            return
+        }
 
-        isLoading = true
+        trendingState = .loading
+
+        do {
+            let searchResults = try await movieService.searchMovies(term: term, page: 1)
+            if searchResults.isEmpty {
+                trendingState = .none
+            } else {
+                trendingState = .searchResult(searchResults)
+                currentPage = 1
+            }
+        } catch {
+            trendingState = .error(message: "Failed to search movies")
+        }
+    }
+    
+    func fetchMoreMovies() async {
+        trendingState = .loading
+
         do {
             let newMovies = try await movieService.fetchPopularMovies(page: currentPage)
             if newMovies.isEmpty {
-                canLoadMore = false
+                trendingState = .none
+            } else {
+                trendingState = .trendingItem(newMovies)
+                currentPage += 1
             }
-            movies.append(contentsOf: newMovies)
-            currentPage += 1
         } catch {
-            print(error)
-        }
-        isLoading = false
-    }
-    
-    func sortMovies(by option: Int) {
-        switch option {
-        case 0: // Popularity
-            movies.sort(by: { $0.popularity ?? 0.0 > $1.popularity ?? 0.0 })
-        case 1: // Title
-            movies.sort(by: { $0.title < $1.title })
-        case 2: // Release Date
-            movies.sort(by: { $0.release_date ?? "" > $1.release_date ?? "" })
-        case 3: // Vote Average
-            movies.sort(by: { $0.vote_average > $1.vote_average })
-        default:
-            break // Do nothing for default
+            trendingState = .error(message: "Failed to fetch movies")
         }
     }
 
+    func sortMovies(by option: MovieSortOption) {
+        movies.sort(by: option.sortDescriptor())
+    }
 }
+
