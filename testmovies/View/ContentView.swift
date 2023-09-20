@@ -9,19 +9,36 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = MovieListViewModel()
-    
+    @State private var showingAlert: Bool = false
+
     var body: some View {
-        List(viewModel.movies, id: \.id) { movie in
-            MainMovieInfo(movie: movie)
-        }
-        .task { // Use the .task modifier for async work
-            await viewModel.fetchMoreMovies()
-        }
-        .onAppear {
-            if viewModel.movies.isEmpty {
-                Task {
-                    await viewModel.fetchMoreMovies()
+        NavigationView {
+            List(viewModel.movies, id: \.id) { movie in
+                if NetworkUtils.hasInternetConnection() {
+                    NavigationLink(destination: MovieDetailView(movie: movie)) {
+                        MainMovieInfo(movie: movie)
+                    }
+                } else {
+                    MainMovieInfo(movie: movie)
+                        .onTapGesture {
+                            showingAlert = true
+                        }
                 }
+            }
+            .task {
+                await viewModel.fetchMoreMovies()
+            }
+            .onAppear {
+                if viewModel.movies.isEmpty {
+                    Task {
+                        await viewModel.fetchMoreMovies()
+                    }
+                }
+            }
+            .alert(isPresented: $showingAlert) {
+                Alert(title: Text("Network Error"),
+                      message: Text("You are offline. Please, enable your Wi-Fi or connect using cellular data."),
+                      dismissButton: .default(Text("OK")))
             }
         }
     }
@@ -32,3 +49,5 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+
