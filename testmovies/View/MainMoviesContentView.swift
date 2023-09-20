@@ -7,26 +7,13 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct MainMoviesContentView: View {
     
     @StateObject var viewModel = MovieListViewModel()
     @State private var isShowingActionSheet = false
     @State private var selectedSortOption: MovieSortOption = .popularity
     @State var searchText = ""
-    @State private var selectedLanguage: String = "en"
-    
-    func toggleLanguage() {
-        if selectedLanguage == "en" {
-            selectedLanguage = "uk"
-            Bundle.setLanguage("uk")
-        } else {
-            selectedLanguage = "en"
-            Bundle.setLanguage("en")
-        }
-    }
-    
+
     var body: some View {
         NavigationView {
             VStack {
@@ -80,13 +67,18 @@ struct MainMoviesContentView: View {
             VStack {
                 HStack {
                     Spacer()
-                    Button(action: toggleLanguage) {
-                        Text(selectedLanguage == "en" ? "🇬🇧" : "🇺🇦")
+                    Button(action: {
+                        Task {
+                             viewModel.toggleLanguage()
+                        }
+                    }) {
+                        Text(viewModel.selectedLanguage == "en" ? "🇬🇧" : "🇺🇦")
                             .padding()
                             .background(Color.white)
                             .clipShape(Circle())
                             .shadow(radius: 5)
                     }
+
                 }
             }
             .padding(), alignment: .bottomLeading

@@ -14,11 +14,26 @@ class MovieListViewModel: ObservableObject {
     @Published var currentPage: Int = 1
     @Published var canLoadMore: Bool = true
     @Published var trendingState: TrendingState = .none
+    @Published var selectedLanguage: String = "en"
     
     private var movieService: MovieService
     
     init(movieService: MovieService = AFMovieService()) {
         self.movieService = movieService
+    }
+    
+    func toggleLanguage() {
+        if selectedLanguage == "en" {
+            selectedLanguage = "uk"
+            Bundle.setLanguage("uk")
+        } else {
+            selectedLanguage = "en"
+            Bundle.setLanguage("en")
+        }
+    }
+    
+    var currentLanguage: String {
+        return selectedLanguage
     }
     
     func search(term: String) async {
