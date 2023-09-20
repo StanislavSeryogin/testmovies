@@ -16,7 +16,8 @@ struct Movie: Decodable, Identifiable, Equatable {
     let poster_path: String?
     let genre_ids: [Int]?
     let trailer_path: String?
-    let country: String? 
+    let country: String?
+    let popularity: Float?
     
    static let baseImageURL = APIConstants.baseImageURL
    static let genreMapping = GenreList.genreMapping
@@ -67,8 +68,9 @@ extension Movie {
         self.vote_average = entity.vote_average
         self.release_date = entity.release_date
         self.poster_path = entity.poster_path
-        self.trailer_path = entity.trailer_path // Make sure MovieEntity has this property
-        self.country = entity.country // Make sure MovieEntity has this property
+        self.trailer_path = entity.trailer_path
+        self.country = entity.country
+        self.popularity = entity.popularity
         if let genreIDsSet = entity.genre_ids as? NSOrderedSet {
             self.genre_ids = genreIDsSet.array as? [Int]
         } else {

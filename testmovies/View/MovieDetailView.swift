@@ -85,7 +85,7 @@ struct FullSizePosterView: View {
                         // Handle zoom gesture
                     })
             }
-            Button("Close") {
+            Button(NSLocalizedString("Close", comment: "Close button")) {
                 closeAction()
             }
             .padding(.top, 10)
