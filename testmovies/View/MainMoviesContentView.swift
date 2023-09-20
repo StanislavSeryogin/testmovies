@@ -7,12 +7,25 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct MainMoviesContentView: View {
     
     @StateObject var viewModel = MovieListViewModel()
     @State private var isShowingActionSheet = false
     @State private var selectedSortOption: MovieSortOption = .popularity
     @State var searchText = ""
+    @State private var selectedLanguage: String = "en"
+    
+    func toggleLanguage() {
+        if selectedLanguage == "en" {
+            selectedLanguage = "uk"
+            Bundle.setLanguage("uk")
+        } else {
+            selectedLanguage = "en"
+            Bundle.setLanguage("en")
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -48,7 +61,7 @@ struct MainMoviesContentView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Popular Movies").font(.largeTitle.bold())
+                    Text(NSLocalizedString("Popular Movies", comment: "Title for the movie list")).font(.largeTitle.bold())
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -60,16 +73,32 @@ struct MainMoviesContentView: View {
                 }
             }
             .actionSheet(isPresented: $isShowingActionSheet) {
-                ActionSheet(title: Text("Select Sorting Option"), buttons: sortingOptions())
+                ActionSheet(title: Text(NSLocalizedString("Select Sorting Option", comment: "Action sheet title")), buttons: sortingOptions())
             }
         }
+        .overlay(
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: toggleLanguage) {
+                        Text(selectedLanguage == "en" ? "🇬🇧" : "🇺🇦")
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                    }
+                }
+            }
+            .padding(), alignment: .bottomLeading
+        )
     }
     
     func sortingOptions() -> [ActionSheet.Button] {
         var buttons: [ActionSheet.Button] = []
         for option in MovieSortOption.allCases {
+            let buttonText = NSLocalizedString(option.rawValue, comment: "Sort option title") + (selectedSortOption == option ? " ✓" : "")
             buttons.append(
-                .default(Text(option.rawValue + (selectedSortOption == option ? " ✓" : "")), action: {
+                .default(Text(buttonText), action: {
                     selectedSortOption = option
                     viewModel.sortMovies(by: option)
                 })
@@ -80,10 +109,8 @@ struct MainMoviesContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct MainMoviesContentView_Previews: PreviewProvider {
     static var previews: some View {
         MainMoviesContentView()
     }
 }
-
-

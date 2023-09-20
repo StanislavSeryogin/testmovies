@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  testmovies
+
+  Created by Stanislav Seryogin on 20.09.2023.
+  
+*/
+
+"Close" = "Close";
+"Popular Movies" = "Popular Movies";
+"Title" = "Title";
+"Release Date" = "Release Date";
+"Vote Average" = "Vote Average";

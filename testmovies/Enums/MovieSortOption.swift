@@ -14,7 +14,6 @@ enum MovieSortOption: String, CaseIterable {
     func sortDescriptor() -> (Movie, Movie) -> Bool {
         switch self {
         case .popularity:
-            // Here you would need to define a 'popularity' property in your Movie struct.
             return { $0.popularity ?? 0.0 > $1.popularity ?? 0.0 }
         case .title:
             return { $0.title < $1.title }

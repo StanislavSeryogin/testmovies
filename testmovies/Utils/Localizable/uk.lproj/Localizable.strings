@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  testmovies
+
+  Created by Stanislav Seryogin on 20.09.2023.
+  
+*/
+
+"Close" = "Закрити";
+"Popular Movies" = "Популярні фільми";
+"Title" = "По назві";
+"Release Date" = "Дата випуску";
+"Vote Average" = "Середній оцінки";
