@@ -15,30 +15,21 @@ struct Movie: Decodable, Identifiable, Equatable {
     let release_date: String?
     let poster_path: String?
     let genre_ids: [Int]?
-
-    static let baseImageURL = "https://image.tmdb.org/t/p/w500"
+    let trailer_path: String?
+    let country: String?
+    let popularity: Float?
     
-    static let genreMapping: [Int: String] = [
-        28: "Action",
-        12: "Adventure",
-        16: "Animation",
-        35: "Comedy",
-        80: "Crime",
-        99: "Documentary",
-        18: "Drama",
-        10751: "Family",
-        14: "Fantasy",
-        36: "History",
-        27: "Horror",
-        10402: "Music",
-        9648: "Mystery",
-        10749: "Romance",
-        878: "Science Fiction",
-        10770: "TV Movie",
-        53: "Thriller",
-        10752: "War",
-        37: "Western"
-    ]
+   static let baseImageURL = APIConstants.baseImageURL
+   static let genreMapping = GenreList.genreMapping
+    
+    var hasTrailer: Bool {
+           return trailer_path != nil
+       }
+
+       var trailerURL: URL? {
+           guard let trailerPath = trailer_path else { return nil }
+           return URL(string: "\(Movie.baseImageURL)\(trailerPath)")
+       }
 
     var genreText: String {
         guard let genreIds = genre_ids else {
@@ -62,6 +53,11 @@ struct Movie: Decodable, Identifiable, Equatable {
     static func == (lhs: Movie, rhs: Movie) -> Bool {
         return lhs.id == rhs.id
     }
+    
+    var description: String {
+        return overview
+    }
+
 }
 
 extension Movie {
@@ -72,6 +68,9 @@ extension Movie {
         self.vote_average = entity.vote_average
         self.release_date = entity.release_date
         self.poster_path = entity.poster_path
+        self.trailer_path = entity.trailer_path
+        self.country = entity.country
+        self.popularity = entity.popularity
         if let genreIDsSet = entity.genre_ids as? NSOrderedSet {
             self.genre_ids = genreIDsSet.array as? [Int]
         } else {
@@ -79,3 +78,4 @@ extension Movie {
         }
     }
 }
+

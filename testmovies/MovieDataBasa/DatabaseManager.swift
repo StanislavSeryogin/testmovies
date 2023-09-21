@@ -13,7 +13,7 @@ class DatabaseManager {
     let container: NSPersistentContainer
 
     init() {
-        container = NSPersistentContainer(name: "ModelName") // Replace "ModelName" with the name of your CoreData model
+        container = NSPersistentContainer(name: "ModelName")
         container.loadPersistentStores { (description, error) in
             if let error = error {
                 print("CoreData Error: \(error)")
@@ -21,7 +21,6 @@ class DatabaseManager {
         }
     }
 
-    // Save movies to the CoreData
     func saveMovies(_ movies: [Movie]) {
         let context = container.viewContext
 
@@ -32,7 +31,11 @@ class DatabaseManager {
             entity.overview = movie.overview
             entity.vote_average = movie.vote_average
             entity.release_date = movie.release_date
-            entity.poster_path = movie.poster_path // Ensure this line exists
+            entity.poster_path = movie.poster_path
+            entity.trailer_path = movie.trailer_path
+            entity.country = movie.country
+            entity.popularity = movie.popularity ?? 0.0
+
             if let genreIDs = movie.genre_ids {
                 entity.genre_ids = NSOrderedSet(array: genreIDs)
             }
@@ -45,7 +48,6 @@ class DatabaseManager {
         }
     }
 
-    // Fetch movies from CoreData and convert to `Movie` structure
     func fetchMovies() -> [Movie] {
         let request: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
         do {
@@ -57,7 +59,6 @@ class DatabaseManager {
         }
     }
 
-    // Search for movies by title in CoreData
     func searchMovies(by title: String) -> [Movie] {
         let request: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
         request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", title)
