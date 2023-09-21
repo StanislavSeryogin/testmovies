@@ -14,4 +14,4 @@
 ####  - If there is no Internet, a list of previously saved items is displayed;
 #
 
-![testmivie_no_internet](https://github.com/StanislavSeryogin/testmovies/assets/64367475/676c2d64-a58d-42bc-875f-8662b15f8b37)
+![testmovie_no_internet](https://github.com/StanislavSeryogin/testmovies/assets/64367475/ccd8b2c5-23fe-4879-882a-a772b652e3f0)
