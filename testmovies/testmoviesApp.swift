@@ -12,6 +12,7 @@ struct testmoviesApp: App {
     var body: some Scene {
         WindowGroup {
             MainMoviesContentView()
+                .preferredColorScheme(.dark)
         }
     }
 }
