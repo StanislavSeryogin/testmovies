@@ -32,25 +32,9 @@ struct MovieDetailView: View {
                         }
                     })
                 VStack (alignment: .leading) {
-                    HStack {
-                        Text(movie.title)
-                            .font(.title)
-                            .fontWeight(.heavy)
-                            .foregroundColor(.white)
-                        Spacer()
-                        Text("\(movie.releaseYear ?? "")")
-                            .foregroundColor(.white)
-                            .fontWeight(.medium)
-                    }
-                    HStack {
-                        Text("Rating: \(String(format: "%.1f", movie.vote_average))")
-                            .foregroundColor(.white)
-                            .fontWeight(.medium)
-                        Spacer()
-                        Text(movie.genreText)
-                            .foregroundColor(.white)
-                            .fontWeight(.medium)
-                    }
+                    TitleAndGenreText(title: movie.title, genre: movie.genreText)
+                    RatingsAndYearText(rating: movie.vote_average, year: movie.releaseYear)
+                    
                     Divider()
                         .background(Color.white)
                         .padding(.vertical)
@@ -61,7 +45,6 @@ struct MovieDetailView: View {
                     Text(movie.overview)
                         .foregroundColor(.white)
                         .fontWeight(.medium)
-                    
                     
                     // Trailer button
                     if movie.hasTrailer {

@@ -25,21 +25,7 @@ struct MainMoviesContentView: View {
                 case .error(let message):
                     Text(message)
                 case .trendingItem(let movies), .searchResult(let movies):
-                    ScrollView {
-                        LazyVStack(spacing: 16) {
-                            ForEach(movies) { movie in
-                                NavigationLink(destination: MovieDetailView(movie: movie)) {
-                                    if searchText.isEmpty {
-                                        MainMovieInfo(movie: movie)
-                                    } else {
-                                        MainMovieInfo(movie: movie)
-                                    }
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        
-                    }
+                    TrendingMoviesView(movies: movies)
                 }
             }
             .background(ColorConstants.backgroundColor.ignoresSafeArea())
@@ -58,7 +44,8 @@ struct MainMoviesContentView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(NSLocalizedString("Popular Movies", comment: "Title for the movie list")).font(.largeTitle.bold())
+                    Text(viewModel.toolBarTitle)
+                        .font(.largeTitle.bold())
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -70,8 +57,10 @@ struct MainMoviesContentView: View {
                 }
             }
             .actionSheet(isPresented: $isShowingActionSheet) {
-                ActionSheet(title: Text(NSLocalizedString("Select Sorting Option", comment: "Action sheet title")), buttons: sortingOptions())
-            }
+                   SortingActionSheet(selectedSortOption: $selectedSortOption) { option in
+                       viewModel.sortMovies(by: option)
+                   }.actionSheet()
+               }
             .overlay(
                 VStack {
                     HStack {
@@ -93,22 +82,7 @@ struct MainMoviesContentView: View {
                     .padding(), alignment: .bottomLeading
             )
         }
-      
-    }
-    
-    func sortingOptions() -> [ActionSheet.Button] {
-        var buttons: [ActionSheet.Button] = []
-        for option in MovieSortOption.allCases {
-            let buttonText = NSLocalizedString(option.rawValue, comment: "Sort option title") + (selectedSortOption == option ? " ✓" : "")
-            buttons.append(
-                .default(Text(buttonText), action: {
-                    selectedSortOption = option
-                    viewModel.sortMovies(by: option)
-                })
-            )
-        }
-        buttons.append(.cancel())
-        return buttons
+        
     }
 }
 

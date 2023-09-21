@@ -15,6 +15,7 @@ class MovieListViewModel: ObservableObject {
     @Published var canLoadMore: Bool = true
     @Published var trendingState: TrendingState = .none
     @Published var selectedLanguage: String = "en"
+    @Published var currentSortingOption: MovieSortOption = .popularity
     
     private var movieService: MovieService
     
@@ -42,14 +43,12 @@ class MovieListViewModel: ObservableObject {
             movies = []
             return
         }
-        
         trendingState = .loading
-        
         do {
             let searchResults = try await movieService.searchMovies(term: term, page: 1)
             if searchResults.isEmpty {
                 trendingState = .none
-                movies = [] // Clear movies if no search results
+                movies = []
             } else {
                 trendingState = .searchResult(searchResults)
                 movies = searchResults
@@ -65,17 +64,15 @@ class MovieListViewModel: ObservableObject {
             trendingState = .none
             return
         }
-        
         trendingState = .loading
-        
         do {
             let newMovies = try await movieService.fetchPopularMovies(page: currentPage)
             if newMovies.isEmpty {
                 trendingState = .none
-                canLoadMore = false // No more movies to load
+                canLoadMore = false
             } else {
                 trendingState = .trendingItem(newMovies)
-                movies.append(contentsOf: newMovies) // Append new movies to existing list
+                movies.append(contentsOf: newMovies)
                 currentPage += 1
             }
         } catch {
@@ -86,6 +83,7 @@ class MovieListViewModel: ObservableObject {
     func sortMovies(by option: MovieSortOption) {
         let comparator = option.sortDescriptor()
         movies.sort(by: comparator)
+        currentSortingOption = option
         switch trendingState {
         case .trendingItem:
             trendingState = .trendingItem(movies)
@@ -95,5 +93,18 @@ class MovieListViewModel: ObservableObject {
             break
         }
     }
+    
+    var toolBarTitle: String {
+          switch currentSortingOption {
+          case .popularity:
+              return NSLocalizedString("Popular Movies", comment: "Title for the movie list")
+          case .title:
+              return NSLocalizedString("Title", comment: "Sorted by title")
+          case .releaseDate:
+              return NSLocalizedString("Release Date", comment: "Sorted by release date")
+          case .voteAverage:
+              return NSLocalizedString("Vote Average", comment: "Sorted by vote average")
+          }
+      }
 }
 

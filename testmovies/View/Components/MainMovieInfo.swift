@@ -17,38 +17,25 @@ struct MainMovieInfo: View {
                 .resizable()
                 .scaledToFill()
                 .clipped()
-                
-            VStack(alignment: .leading) {
-                Spacer()
-                VStack {
-                    HStack {
-                        Text(movie.title)
-                            .foregroundColor(.white)
-                            .fontWeight(.heavy)
-                            .lineLimit(1)
-                        Spacer()
-                        Text(movie.genreText)
-                            .foregroundColor(.white)
-                            .fontWeight(.heavy)
-                            .lineLimit(1)
-                    }
-                    HStack {
-                        Image(systemName: "hand.thumbsup.fill")
-                            .foregroundColor(.yellow)
-                        Text(String(format: "%.1f", movie.vote_average))
-                            .fontWeight(.heavy)
-                            .foregroundColor(.yellow)
-                        Spacer()
-                        Text(movie.releaseYear ?? "")
-                            .foregroundColor(.white)
-                            .fontWeight(.medium)
-                    }
-                }
-                .padding()
-                .background(ColorConstants.backgroundImageColor)
-            }
+            MovieInfoText(movie: movie)
         }
         .cornerRadius(20)
         .shadow(color: Color.black.opacity(0.5), radius: 5, x: 0, y: 5)
+    }
+}
+
+struct MovieInfoText: View {
+    let movie: Movie
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Spacer()
+            VStack {
+                TitleAndGenreText(title: movie.title, genre: movie.genreText)
+                RatingsAndYearText(rating: movie.vote_average, year: movie.releaseYear)
+            }
+            .padding()
+            .background(ColorConstants.backgroundImageColor)
+        }
     }
 }
