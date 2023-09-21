@@ -83,12 +83,9 @@ class MovieListViewModel: ObservableObject {
         }
     }
     
-    
-    
     func sortMovies(by option: MovieSortOption) {
         let comparator = option.sortDescriptor()
         movies.sort(by: comparator)
-        
         switch trendingState {
         case .trendingItem:
             trendingState = .trendingItem(movies)

@@ -13,7 +13,7 @@ struct MainMoviesContentView: View {
     @State private var isShowingActionSheet = false
     @State private var selectedSortOption: MovieSortOption = .popularity
     @State var searchText = ""
-
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -25,10 +25,20 @@ struct MainMoviesContentView: View {
                 case .error(let message):
                     Text(message)
                 case .trendingItem(let movies), .searchResult(let movies):
-                    List(movies) { movie in
-                        NavigationLink(destination: MovieDetailView(movie: movie)) {
-                            MainMovieInfo(movie: movie)
+                    ScrollView {
+                        LazyVStack(spacing: 16) {
+                            ForEach(movies) { movie in
+                                NavigationLink(destination: MovieDetailView(movie: movie)) {
+                                    if searchText.isEmpty {
+                                        MainMovieInfo(movie: movie)
+                                    } else {
+                                        MainMovieInfo(movie: movie)
+                                    }
+                                }
+                            }
                         }
+                        .padding(.horizontal)
+                        
                     }
                 }
             }
@@ -62,27 +72,28 @@ struct MainMoviesContentView: View {
             .actionSheet(isPresented: $isShowingActionSheet) {
                 ActionSheet(title: Text(NSLocalizedString("Select Sorting Option", comment: "Action sheet title")), buttons: sortingOptions())
             }
-        }
-        .overlay(
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        Task {
-                             viewModel.toggleLanguage()
+            .overlay(
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            Task {
+                                viewModel.toggleLanguage()
+                            }
+                        }) {
+                            Text(viewModel.selectedLanguage == "en" ? "🇬🇧" : "🇺🇦")
+                                .padding()
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
                         }
-                    }) {
-                        Text(viewModel.selectedLanguage == "en" ? "🇬🇧" : "🇺🇦")
-                            .padding()
-                            .background(Color.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
+                        
                     }
-
                 }
-            }
-            .padding(), alignment: .bottomLeading
-        )
+                    .padding(), alignment: .bottomLeading
+            )
+        }
+      
     }
     
     func sortingOptions() -> [ActionSheet.Button] {

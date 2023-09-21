@@ -16,6 +16,7 @@ struct AFMovieService: MovieService {
                     switch response.result {
                     case .success(let moviesResponse):
                         continuation.resume(returning: moviesResponse.results)
+                        
                     case .failure(let error):
                         continuation.resume(throwing: error)
                     }
