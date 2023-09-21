@@ -7,8 +7,6 @@
 
 import Network
 
-import Network
-
 struct NetworkUtils {
     private static var monitor: NWPathMonitor? = {
         let monitor = NWPathMonitor()

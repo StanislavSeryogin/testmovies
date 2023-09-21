@@ -12,9 +12,20 @@ struct APIConstants {
     static let baseURL = "https://api.themoviedb.org/3"
     static let apiKey = "f28f883aaaa7b53bd7c5edb467e10250"
     static let baseImageURL = "https://image.tmdb.org/t/p/w500"
+    
     static func popularMoviesURL(page: Int) -> String {
         return "\(baseURL)/movie/popular?api_key=\(apiKey)&page=\(page)"
     }
+    
+    static func searchMoviesURL(term: String, page: Int) -> String {
+        return "\(baseURL)/search/movie?api_key=\(apiKey)&query=\(term)&page=\(page)"
+    }
+}
+
+
+struct ColorConstants {
+    static let backgroundColor = Color(red: 39/255, green: 40/255, blue: 59/255)
+    static let backgroundImageColor = Color(red: 61/255, green: 61/255, blue: 88/255)
 }
 
 struct GenreList {
