@@ -10,7 +10,7 @@ import SwiftUI
 
 struct APIConstants {
     static let baseURL = "https://api.themoviedb.org/3"
-    static let apiKey = "f28f883aaaa7b53bd7c5edb467e10250"
+    static let apiKey = "Api_Key"
     static let baseImageURL = "https://image.tmdb.org/t/p/w500"
     
     static func popularMoviesURL(page: Int) -> String {
